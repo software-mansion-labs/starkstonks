@@ -32,6 +32,7 @@ import { WALLET_URL } from "./config";
 import { StarkstonksSigner } from "./signer";
 import { StarknetChainId } from "starknet/dist/constants";
 import { openWallet } from "./utils";
+import { useListener } from "./messages";
 
 const erc20Address = process.env.ERC20_ADDRESS as string;
 
@@ -274,26 +275,16 @@ const LoginScreen: React.FC<{ onCreate: (account: Account) => void }> = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const listener = (event: MessageEvent<AccountResponse>) => {
-      console.log("here 1");
-      if (event.origin !== WALLET_URL) return;
-      console.log("here 2");
+  useListener("connect", WALLET_URL, (event) => {
+    if (event.origin !== WALLET_URL) {
+      return;
+    }
 
-      console.log(event.data);
+    const signer = new StarkstonksSigner();
+    const account = new Account(provider, event.data.address, signer);
 
-      if (event.data.status === "success") {
-        const signer = new StarkstonksSigner();
-        const account = new Account(provider, event.data.address, signer);
-
-        onCreate(account);
-      }
-    };
-
-    window.addEventListener("message", listener, false);
-
-    return () => window.removeEventListener("message", listener);
-  }, [onCreate]);
+    onCreate(account);
+  });
 
   const onClick = () => {
     openWallet("/auth");
