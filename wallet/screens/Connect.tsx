@@ -3,30 +3,29 @@ import { Button, Grid } from "@mui/material";
 import { useRouter } from "next/router";
 import { useGetKey } from "../utils/keys";
 import LoadingScreen from "./LoadingScreen";
+import useAccountContractAddress from "../hooks/useAccountContractAddress";
 
 const Connect: React.FC = () => {
   const router = useRouter();
   const { data } = useGetKey();
+  const [accountAddress] = useAccountContractAddress();
 
   useEffect(() => {
-    if (data && !data.keys) {
+    if (data && !data.keys || !accountAddress) {
       router.replace("/register?redirectToConnect");
     }
-  }, [data, router]);
+  }, [accountAddress, data, router]);
 
-  if (!data?.keys) {
-    return <LoadingScreen title="Getting your keys..." />;
+  if (!data?.keys || !accountAddress) {
+    return <LoadingScreen title="Getting your wallet..." />;
   }
 
   const onLogin = () => {
-    console.log(window.parent);
-    // TODO: Address
     window.opener.postMessage(
       {
         type: "connect",
         status: "success",
-        address:
-          "0x0332d3a3d623bb62a4fb95f6d2c1415d47fb3daffc34587d38e839402bac4af4",
+        address: accountAddress,
       },
       "*"
     );
