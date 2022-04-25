@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Container, Grid } from "@mui/material";
-import SignTx from "../screens/SignTx";
+import { Grid } from "@mui/material";
 import Login from "../screens/Login";
 
 const Auth: NextPage = () => {
