@@ -275,7 +275,8 @@ const LoginScreen: React.FC<{ onCreate: (account: Account) => void }> = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
-  useListener("connect", WALLET_URL, (event) => {
+  useListener("connect", (event) => {
+    console.log("heree");
     if (event.origin !== WALLET_URL) {
       return;
     }
@@ -287,7 +288,7 @@ const LoginScreen: React.FC<{ onCreate: (account: Account) => void }> = ({
   });
 
   const onClick = () => {
-    openWallet("/auth");
+    openWallet("/connect");
   };
 
   return (

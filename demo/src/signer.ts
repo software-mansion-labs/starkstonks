@@ -30,7 +30,7 @@ export class StarkstonksSigner implements SignerInterface {
 
       const dataEncoded = encode(data);
 
-      openWallet(`/wallet?tx=${dataEncoded}`);
+      openWallet(`/sign?tx=${dataEncoded}`);
 
       const listener = (event: MessageEvent) => {
         if (event.origin !== WALLET_URL) return;
