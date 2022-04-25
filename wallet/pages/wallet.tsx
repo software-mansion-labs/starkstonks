@@ -19,6 +19,7 @@ import { uint256ToBN } from "starknet/utils/uint256";
 import BN from "bn.js";
 import { CenteringBox } from "../components/layout";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { ScreenWrapper } from "../screens/utils";
 import useAccountContractAddress from "../hooks/useAccountContractAddress";
 
 
@@ -52,7 +53,7 @@ const TokenAmount: React.FC<{ userAddress: string, address: string; decimals: nu
 
 const contractAddress = "0x0096fcc7ed91f5710208b3d029d1159f204a6be7246184f0ed4ffbccdfb49baf";
 
-const Home: NextPage = () => {
+const WalletPage: NextPage = () => {
   const [savedUserAddress] = useAccountContractAddress();
   const [userAddress, setAddress] = useState("");
   useEffect(() => {
@@ -110,8 +111,50 @@ const Home: NextPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <ScreenWrapper>
+        <CenteringBox>
+          <Chip
+            label={`${userAddress.substring(0, 5)}...${userAddress.substring(userAddress.length - 6, userAddress.length - 1)}`}
+            onDelete={() => navigator.clipboard.writeText(userAddress)}
+            onClick={() => navigator.clipboard.writeText(userAddress)}
+            deleteIcon={<ContentCopyIcon/>}
+          />
+        </CenteringBox>
+        <Typography variant="subtitle1" gutterBottom component="div">
+          Your tokens
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Token</TableCell>
+                <TableCell align="right">Amount</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow
+                  key={row.name}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell align="right">
+                    <TokenAmount
+                      decimals={row.decimals}
+                      userAddress={userAddress}
+                      address={row.address}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </ScreenWrapper>
     </div>
   )
 }
 
-export default Home;
+export default WalletPage;
