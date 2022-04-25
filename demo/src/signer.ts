@@ -6,6 +6,7 @@ import {
   SignerInterface,
 } from "starknet";
 import { WALLET_URL } from "./config";
+import { encode, openWallet } from "./utils";
 
 export class StarkstonksSigner implements SignerInterface {
   async getPubKey(): Promise<string> {
@@ -27,9 +28,9 @@ export class StarkstonksSigner implements SignerInterface {
         transactionsDetail,
       };
 
-      const dataEncoded = JSON.stringify(data);
+      const dataEncoded = encode(data);
 
-      window.open(`${WALLET_URL}/wallet?tx=${dataEncoded}`);
+      openWallet(`/wallet?tx=${dataEncoded}`);
 
       const listener = (event: MessageEvent) => {
         if (event.origin !== WALLET_URL) return;
