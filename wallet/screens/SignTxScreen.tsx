@@ -76,6 +76,7 @@ const SignTxScreen: React.FC<SignTxProps> = () => {
           border: "black 1px solid",
           borderRadius: "15px",
           padding: "20px 10px",
+            overflow: "auto",
         }}
       >
         {JSON.stringify(txContent, null, 4)}

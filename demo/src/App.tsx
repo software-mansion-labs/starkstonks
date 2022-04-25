@@ -51,7 +51,6 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
         );
 
         const [low, high] = result;
-        // We have 18 decimal places
         return uint256ToBN({ low, high });
       } catch (e) {
         const err = e as Error;
@@ -70,15 +69,14 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
   );
 
   const calldata = useMemo(() => {
-    if (!amount || !address || address.length != 42) {
+    if (!amount || !address) {
       return undefined;
     }
 
     try {
       const parsedAmount = bnToUint256(toBN(amount, 10));
-      const starknetAddress = lib.address;
       return [
-        starknetAddress,
+        address,
         parsedAmount.low.toString(16),
         parsedAmount.high.toString(16),
       ];
