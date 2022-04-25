@@ -1,0 +1,12 @@
+[submodule "openzeppelin_contracts"]
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+	path = lib/openzeppelin_contracts
+[submodule "nistp256_cairo"]
+	url = https://github.com/spartucus/nistp256-cairo
+	path = lib/nistp256_cairo
+[submodule "cairo_contracts_git"]
+	url = https://github.com/OpenZeppelin/cairo-contracts.git
+	path = lib/cairo_contracts_git
+[submodule "cairo_examples"]
+	url = https://github.com/starkware-libs/cairo-examples
+	path = lib/cairo_examples
