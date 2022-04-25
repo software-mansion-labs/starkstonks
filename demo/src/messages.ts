@@ -10,6 +10,9 @@ export const useListener = (name: string, handler: MessageHandler) => {
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
+      console.log("orig", event.origin);
+      console.log("data", event.data);
+      console.log("data", event.data.type);
       if (
         event.origin === WALLET_URL &&
         event.data &&

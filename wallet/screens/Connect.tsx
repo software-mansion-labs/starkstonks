@@ -9,10 +9,10 @@ const Connect: React.FC = () => {
   const { data } = useGetKey();
 
   useEffect(() => {
-    if (!data?.keys) {
+    if (data && !data.keys) {
       router.replace("/register?redirectToConnect");
     }
-  }, [data?.keys, router]);
+  }, [data, router]);
 
   if (!data?.keys) {
     return <LoadingScreen title="Getting your keys..." />;
@@ -21,7 +21,7 @@ const Connect: React.FC = () => {
   const onLogin = () => {
     console.log(window.parent);
     // TODO: Address
-    window.parent.postMessage(
+    window.opener.postMessage(
       {
         type: "connect",
         status: "success",
