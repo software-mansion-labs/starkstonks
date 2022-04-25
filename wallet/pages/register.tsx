@@ -7,7 +7,7 @@ interface RegisterPageProps {
 }
 
 export const getStaticProps = () => {
-  const accountContract = fs.readFileSync('../haskell-contract/build/main.json').toString(); // FIXME
+  const accountContract = fs.readFileSync('../haskell-contract/build/main.json').toString();
   return { props: { accountContract } };
 }
 

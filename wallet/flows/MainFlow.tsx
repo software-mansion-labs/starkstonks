@@ -4,7 +4,7 @@ import LoadingScreen from "../screens/LoadingScreen";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import { Provider } from "starknet";
 import { useRouter } from "next/router";
-import { useLocalStorage } from "react-use";
+import useAccountContractAddress from "../hooks/useAccountContractAddress";
 
 const provider = new Provider({ baseUrl: "http://localhost:5000" });
 
@@ -15,11 +15,8 @@ interface RegisterFlowProps {
 const RegisterFlow: React.FC<RegisterFlowProps> = ({ compiledAccountContract }) => {
   const key = useGetKey();
   const router = useRouter();
-  const [hasDeployed, setHasDeployed] = useLocalStorage('has-deployed-contract');
+  const [accountContractAddress, setAccountContractAddress] = useAccountContractAddress();
   const [creatingAccount, setCreatingAccount] = useState(false);
-  if(key.data?.keys !== undefined){
-    router.replace(`wallet`);
-  }
 
   const createAccount = async (passphrase: string) => {
     setCreatingAccount(true);
@@ -27,32 +24,38 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ compiledAccountContract }) 
   }
 
   useEffect(() => {
-    if (!key.data || key.data?.keys === undefined || hasDeployed) {
+    if (!key.data || key.data?.keys === undefined || accountContractAddress) {
       return;
     }
-    // Elligible for creating
     provider.deployContract({
-      // FIXME
-      // constructorCalldata: [key.data.keys?.publicKey]
+      constructorCalldata: [1], // FIXME
       contract: compiledAccountContract
     }).then((addTxRes) => {
       provider.waitForTransaction(addTxRes.transaction_hash).then(() => {
         let redirect;
-        if (typeof router.query.redirectToConnect === 'string') { //
-          redirect = `connect`;
-        } else {
-          redirect = `wallet`;
+        if (!addTxRes.address) {
+          throw new Error("No address returned for account contract from gateway");
         }
-        setHasDeployed(true);
+        if (typeof router.query.redirectToConnect === 'string') {
+          redirect = 'connect';
+        } else {
+          redirect = 'wallet';
+        }
+        setAccountContractAddress(addTxRes.address);
         router.replace(redirect);
       })
     });
-  }, [compiledAccountContract, hasDeployed, key.data, key.data?.keys, router, router.query.redirectToConnect, setHasDeployed]);
+  }, [compiledAccountContract, accountContractAddress, key.data, key.data?.keys, router, router.query.redirectToConnect, setAccountContractAddress]);
+
+  if (key.data?.keys !== undefined && accountContractAddress) {
+    router.replace(`wallet`);
+    return <LoadingScreen title="Loading your wallet..."/>;
+  }
 
   return <>
     {!creatingAccount && (<>
       {key.data === undefined && <LoadingScreen title="Loading your wallet..."/>}
-      {key.data?.keys === undefined && <RegistrationScreen onRegister={createAccount}/>}
+      {key.data && key.data.keys === undefined && <RegistrationScreen onRegister={createAccount}/>}
     </>)}
     {creatingAccount && <LoadingScreen title="Creating your account..."/>}
   </>;
