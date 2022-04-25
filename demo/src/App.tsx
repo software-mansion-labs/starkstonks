@@ -126,8 +126,8 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
       .finally(() => setLoading(false));
   };
 
-  const onTestPress = () => {
-    lib.signer.signTransaction(
+  const onTestPress = async () => {
+    const result = await lib.signer.signTransaction(
       [
         {
           entrypoint: "transfer",
@@ -143,6 +143,8 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
         nonce: 0,
       }
     );
+
+    console.log("result:", result);
   };
 
   return (

@@ -3,14 +3,24 @@ import { Button, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { decode, encode } from "../utils/messages";
 import { ScreenWrapper } from "./utils";
+import { LoadingButton } from "@mui/lab";
+import { defaultProvider, Signature, Signer } from "starknet";
+import { getKeyPair } from "starknet/dist/utils/ellipticCurve";
+import { useGetKey } from "../utils/keys";
+import { ec as EC } from "elliptic";
+import { toBN } from "starknet/utils/number";
 
 interface SignTxProps {
   onSign: () => void | Promise<void>;
 }
 
-const SignTxScreen: React.FC<SignTxProps> = ({ onSign }) => {
+const provider = defaultProvider;
+
+const SignTxScreen: React.FC<SignTxProps> = () => {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
+
+  const { data } = useGetKey();
 
   // React.useEffect(() => {
   //   // const txContent = decode(router.query.tx as string);
@@ -23,10 +33,37 @@ const SignTxScreen: React.FC<SignTxProps> = ({ onSign }) => {
 
   const txContent = decode(router.query.tx);
 
-  // router.query.tx = encode({
-  //   tx1: "param1",
-  //   tx2: "param2",
-  // }); // FIXME
+  const onSignatureReceived = (signature: Signature) => {
+    window.opener.postMessage(
+      {
+        type: "sign",
+        status: "success",
+        signature,
+      },
+      "*"
+    );
+    window.close();
+  };
+
+  const onSign = async () => {
+    setLoading(true);
+
+    // if (
+    //   data !== undefined &&
+    //   txContent.transactions &&
+    //   txContent.transactionsDetail
+    // ) {
+    //   window.crypto.subtle.sign(
+    //     { name: "ECDSA", hash: "SHA-256" },
+    //     data.keys.privateKey,
+    //     new Buffer(txContent)
+    //   );
+    // }
+
+    // TODO
+
+    onSignatureReceived(["0", "123", "234", "345", "567"]);
+  };
 
   return (
     <ScreenWrapper>
@@ -43,9 +80,15 @@ const SignTxScreen: React.FC<SignTxProps> = ({ onSign }) => {
       >
         {JSON.stringify(txContent, null, 4)}
       </pre>
-      <Button onSubmit={onSign} fullWidth color="primary">
+      <LoadingButton
+        loading={loading}
+        onClick={onSign}
+        fullWidth
+        color="primary"
+        variant="contained"
+      >
         Sign!
-      </Button>
+      </LoadingButton>
     </ScreenWrapper>
   );
 };
