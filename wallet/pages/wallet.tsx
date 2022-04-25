@@ -19,6 +19,7 @@ import { uint256ToBN } from "starknet/utils/uint256";
 import BN from "bn.js";
 import { CenteringBox } from "../components/layout";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import useAccountContractAddress from "../hooks/useAccountContractAddress";
 
 
 const starknet = defaultProvider;
@@ -35,7 +36,7 @@ const TokenAmount: React.FC<{ userAddress: string, address: string; decimals: nu
                                                                                              decimals
                                                                                            }) => {
   const { data } = useSWR(`token-balance-${address}`, () =>
-    undefined && starknet.callContract({
+    starknet.callContract({
       contractAddress: address,
       entrypoint: "getBalance",
       calldata: bigNumberishArrayToDecimalStringArray([userAddress]),
@@ -49,11 +50,10 @@ const TokenAmount: React.FC<{ userAddress: string, address: string; decimals: nu
   return <span>{formatUint256(result, decimals)}</span>;
 }
 
-const userAddress = "0x0332d3a3d623bb62a4fb95f6d2c1415d47fb3daffc34587d38e839402bac4af4";
 const contractAddress = "0x0332d3a3d623bb62a4fb95f6d2c1415d47fb3daffc34587d38e839402bac4af4";
 
-// TODO: Get user's address
 const Home: NextPage = () => {
+  const userAddress = useAccountContractAddress();
   const rows = [{ name: "TKN", address: contractAddress, decimals: 8 }];
   return (
     <div>
