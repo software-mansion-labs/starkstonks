@@ -48,7 +48,7 @@ end
 #return 1 if x ==0 mod n
 func is_urbigInt3_zero{range_check_ptr}(x : BigInt3, n : BigInt3) -> (res : felt):
     %{
-        from starkware.cairo.common.cairo_secp.secp_utils import  pack
+        from starkware.cairo.common.cairo_secp.secp_utils import pack
         n = pack(ids.n, PRIME)
         x = pack(ids.x, PRIME) % n
     %}

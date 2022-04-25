@@ -16,20 +16,12 @@ from src.custom_library import (
 
 from openzeppelin.introspection.ERC165 import ERC165_supports_interface 
 from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
+from p256_ec import EcPoint
+from bigint import BigInt3
 
 #
 # Getters
 #
-
-@view
-func get_public_key{
-        syscall_ptr : felt*,
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }() -> (res: felt):
-    let (res) = Account_get_public_key()
-    return (res=res)
-end
 
 @view
 func get_nonce{
@@ -55,16 +47,6 @@ end
 # Setters
 #
 
-@external
-func set_public_key{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(new_public_key: felt):
-    Account_set_public_key(new_public_key)
-    return ()
-end
-
 #
 # Constructor
 #
@@ -74,7 +56,7 @@ func constructor{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(public_key: felt):
+    }(public_key: EcPoint):
     Account_initializer(public_key)
     return ()
 end
@@ -82,21 +64,6 @@ end
 #
 # Business logic
 #
-
-@view
-func is_valid_signature{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr, 
-        ecdsa_ptr: SignatureBuiltin*
-    }(
-        hash: felt,
-        signature_len: felt,
-        signature: felt*
-    ) -> ():
-    Account_is_valid_signature(hash, signature_len, signature)
-    return ()
-end
 
 @external
 func __execute__{
