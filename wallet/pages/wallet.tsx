@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import {
-  Button, Chip,
+  Chip,
   Paper, Skeleton,
   Table,
   TableBody,
@@ -9,7 +9,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
   Typography
 } from "@mui/material";
 import { defaultProvider } from "starknet";
@@ -18,6 +17,9 @@ import React from "react";
 import { bigNumberishArrayToDecimalStringArray } from "starknet/utils/number";
 import { uint256ToBN } from "starknet/utils/uint256";
 import BN from "bn.js";
+import { CenteringBox } from "../components/layout";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 
 const starknet = defaultProvider;
 
@@ -60,12 +62,19 @@ const Home: NextPage = () => {
         <meta name="description" content="Starknet AMS Hackathon Project"/>
         <link rel="icon" href="/favicon.ico"/>
       </Head>
-      <Chip label={userAddress}/>
+      <CenteringBox>
+        <Chip
+          label={`${userAddress.substring(0, 5)}...${userAddress.substring(userAddress.length - 6, userAddress.length - 1)}`}
+          onDelete={() => navigator.clipboard.writeText(userAddress)}
+          onClick={() => navigator.clipboard.writeText(userAddress)}
+          deleteIcon={<ContentCopyIcon/>}
+        />
+      </CenteringBox>
       <Typography variant="subtitle1" gutterBottom component="div">
         Your tokens
       </Typography>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>Token</TableCell>
