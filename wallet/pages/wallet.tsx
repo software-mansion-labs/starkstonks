@@ -67,7 +67,10 @@ const Home: NextPage = () => {
         <meta name="description" content="Starknet AMS Hackathon Project"/>
         <link rel="icon" href="/favicon.ico"/>
       </Head>
-      <CenteringBox>
+      <Typography variant="subtitle1" gutterBottom component="div">
+        Your address
+      </Typography>
+      <CenteringBox sx={{paddingBottom: 4}}>
         <Chip
           label={`${userAddress.substring(0, 5)}...${userAddress.substring(userAddress.length - 6, userAddress.length - 1)}`}
           onDelete={() => navigator.clipboard.writeText(userAddress)}
