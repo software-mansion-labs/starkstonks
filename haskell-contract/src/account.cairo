@@ -34,11 +34,11 @@ func get_nonce{
     }() -> (res: felt):
 
     let public_key_pt = EcPoint(
-        BigInt3(0x14c422dcaf5b155f3d952a,0x13d236b0837506a7db3953,0x19adbf051b7f566e8cba9),
-        BigInt3(0xdbfea698128928378b45,0xb563e98b8df5b3ab2267e,0xc41a75ef3967c29505987))
-    let r = BigInt3(0xad2fe7abda8a321de87fa,0x34cf31043ba3cc20c81398,0x5b54753d12828190cc5d4)
-    let s = BigInt3(0x1bfadacff53508a445a3d8,0x1f3b7377788a5741c8e5fc,0x866d08f80c2e3c14f8d4c)
-    let msg_hash = BigInt3(0x4d79206d657373616765,0,0)
+        BigInt3(0xdff543a62da7d7017c42d,0x2c6ff711edd0bc0d915b4c,0x69030b9106fecc788677b),
+        BigInt3(0x2f5c09843c026609c6b555,0x1938bbc9771b5221311892,0x8793a19494e67327b210e))
+    let r = BigInt3(0x8e7922283582cd576455f,0xd9c2b6eea9c9da8bf568a,0xe70a0b2fe3e5d47b27beb)
+    let s = BigInt3(0x11a09242061b97ce473d6,0x3ac7622c6090c984241f26,0x902e7372f7a819f86991c)
+    let msg_hash = BigInt3(0x100377dbc4e7a6a133ec56,0x25c813f825413878bbec6a,0x44acf6b7e36c1342c2c58)
     verify_ecdsa(public_key_pt=public_key_pt, msg_hash=msg_hash, r=r, s=s)
     let (res) = Account_get_nonce()
     return (res=res)
