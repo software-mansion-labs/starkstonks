@@ -17,6 +17,9 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ compiledAccountContract }) 
   const router = useRouter();
   const [hasDeployed, setHasDeployed] = useLocalStorage('has-deployed-contract');
   const [creatingAccount, setCreatingAccount] = useState(false);
+  if(key.data?.keys !== undefined){
+    router.replace(`wallet`);
+  }
 
   const createAccount = async (passphrase: string) => {
     setCreatingAccount(true);
@@ -32,15 +35,17 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ compiledAccountContract }) 
       // FIXME
       // constructorCalldata: [key.data.keys?.publicKey]
       contract: compiledAccountContract
-    }).then(() => {
-      let redirect;
-      if (typeof router.query.redirectToConnect === 'string') { //
-        redirect = `connect`;
-      } else {
-        redirect = `wallet`;
-      }
-      setHasDeployed(true);
-      router.replace(redirect);
+    }).then((addTxRes) => {
+      provider.waitForTransaction(addTxRes.transaction_hash).then(() => {
+        let redirect;
+        if (typeof router.query.redirectToConnect === 'string') { //
+          redirect = `connect`;
+        } else {
+          redirect = `wallet`;
+        }
+        setHasDeployed(true);
+        router.replace(redirect);
+      })
     });
   }, [compiledAccountContract, hasDeployed, key.data, key.data?.keys, router, router.query.redirectToConnect, setHasDeployed]);
 
