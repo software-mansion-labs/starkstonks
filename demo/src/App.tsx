@@ -261,6 +261,7 @@ const LoginScreen: React.FC<{ onCreate: (account: Account) => void }> = ({
       if (event.data.status === "success") {
         const signer = new StarkstonksSigner();
         const account = new Account(provider, event.data.address, signer);
+
         onCreate(account);
       }
     };
@@ -358,6 +359,8 @@ const App = () => {
   //     </Dialog>
   //   );
   // }
+
+  console.log("account:", account);
 
   return account === undefined ? (
     <LoginScreen onCreate={setAccount} />
