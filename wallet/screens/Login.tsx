@@ -1,15 +1,35 @@
 import React from "react";
-import { Button, Grid } from "@mui/material";
+import { Box, Button, Grid, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 
 const Login: React.FC = () => {
-  const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    setLoading(true);
+
+    setTimeout(() => setLoading(false), 3000);
+  }, []);
 
   const onLogin = () => {
-    console.log(window.parent);
+    window.opener.postMessage(
+      {
+        success: true,
+        address: "123123123",
+      },
+      "*"
+    );
 
-    window.parent.postMessage({ type: "dupa" }, "*");
+    window.close();
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Grid item xs={3}>
