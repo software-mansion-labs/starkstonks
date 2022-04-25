@@ -49,7 +49,7 @@ export const loadKeys = async (): Promise<CryptoKeyPair> => {
 export const generateKeys = async () => {
     const keys = await window.crypto.subtle.generateKey(
         {name: "ECDSA", namedCurve: "P-256"},
-        true,
+        false,
         ["sign", "verify"]
     );
     await saveKeys(keys);

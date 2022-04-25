@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Grid } from "@mui/material";
-import Login from "../screens/Login";
+import Connect from "../screens/Connect";
 
-const Auth: NextPage = () => {
+const Page: NextPage = () => {
   return (
     <div>
       <Head>
@@ -23,10 +23,10 @@ const Auth: NextPage = () => {
         justifyContent="center"
         style={{ minHeight: "100vh" }}
       >
-        <Login />
+        <Connect />
       </Grid>
     </div>
   );
 };
 
-export default Auth;
+export default Page;
