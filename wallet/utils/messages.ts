@@ -1,6 +1,7 @@
 import {useEffect, useRef} from "react";
 
-type MessageHandler = (event: Record<any, any>) => void;
+type Message = {type: string} & Record<string, any>;
+type MessageHandler = (event: Message) => void;
 
 export const useListener = (name: string, handler: MessageHandler) => {
     const handlerRef = useRef(handler);
