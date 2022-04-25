@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { defaultProvider } from "starknet";
 import useSWR from "swr";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { bigNumberishArrayToDecimalStringArray } from "starknet/utils/number";
 import { uint256ToBN } from "starknet/utils/uint256";
 import BN from "bn.js";
@@ -55,6 +55,23 @@ const contractAddress = "0x0096fcc7ed91f5710208b3d029d1159f204a6be7246184f0ed4ff
 
 const WalletPage: NextPage = () => {
   const [savedUserAddress] = useAccountContractAddress();
+  const router = useRouter();
+
+  const [userAddress, setAddress] = useState("");
+  useEffect(() => {
+    setAddress(savedUserAddress ?? "");
+  }, [savedUserAddress]);
+
+  useEffect(() => {
+    if (!savedUserAddress) {
+      router.replace('register');
+    }
+  }, [router, savedUserAddress, userAddress]);
+
+  if (!userAddress) {
+    return null;
+  }
+
   const [userAddress, setAddress] = useState("");
   useEffect(() => {
       setAddress(savedUserAddress as string | undefined ?? "");
