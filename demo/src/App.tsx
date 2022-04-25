@@ -243,30 +243,32 @@ type AccountResponse =
       errorMessage: string;
     };
 
-const provider = defaultProvider;
+const provider = new Provider({ baseUrl: "http://localhost:5000" });
 
 const LoginScreen: React.FC<{ onCreate: (account: Account) => void }> = ({
   onCreate,
 }) => {
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const listener = (event: MessageEvent<AccountResponse>) => {
-  //     if (event.origin !== WALLET_URL) return;
+  useEffect(() => {
+    const listener = (event: MessageEvent<AccountResponse>) => {
+      console.log("here 1");
+      if (event.origin !== WALLET_URL) return;
+      console.log("here 2");
 
-  //     console.log(event.data);
+      console.log(event.data);
 
-  //     if (event.data.status === "success") {
-  //       // const signer = new StarkstonksSigner();
-  //       // const account = new Account(provider, event.data.address, signer);
-  //       // onCreate(account);
-  //     }
-  //   };
+      if (event.data.status === "success") {
+        const signer = new StarkstonksSigner();
+        const account = new Account(provider, event.data.address, signer);
+        onCreate(account);
+      }
+    };
 
-  //   window.addEventListener("message", listener, false);
+    window.addEventListener("message", listener, false);
 
-  //   return () => window.removeEventListener("message", listener);
-  // }, [onCreate]);
+    return () => window.removeEventListener("message", listener);
+  }, [onCreate]);
 
   const onClick = () => {
     window.open(

@@ -15,7 +15,8 @@ const Login: React.FC = () => {
     window.opener.postMessage(
       {
         success: true,
-        address: "123123123",
+        address:
+          "0x0332d3a3d623bb62a4fb95f6d2c1415d47fb3daffc34587d38e839402bac4af4",
       },
       "*"
     );
