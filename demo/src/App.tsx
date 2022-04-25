@@ -102,7 +102,7 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
         contractAddress: erc20Address,
         entrypoint: "transfer",
         calldata,
-      })
+      }, undefined, {maxFee: 0})
       .then(trackTx)
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -120,7 +120,7 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
         contractAddress: erc20Address,
         entrypoint: "topup",
         calldata: [hexToDecimalString(lib.address)],
-      })
+      }, undefined, {maxFee: 0})
       .then(trackTx)
       .catch(console.error)
       .finally(() => setLoading(false));

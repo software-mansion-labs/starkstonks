@@ -45,7 +45,7 @@ export const useTrackTxInProgress = (
     () => ({
       trackTx: (response: AddTransactionResponse) =>
         setTxInProgress(response.transaction_hash),
-      setTxInProgress,
+      txInProgress,
     }),
     [txInProgress]
   );

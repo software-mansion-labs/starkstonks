@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { defaultProvider } from "starknet";
 import useSWR from "swr";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { bigNumberishArrayToDecimalStringArray } from "starknet/utils/number";
 import { uint256ToBN } from "starknet/utils/uint256";
 import BN from "bn.js";
@@ -38,7 +38,7 @@ const TokenAmount: React.FC<{ userAddress: string, address: string; decimals: nu
   const { data } = useSWR(`token-balance-${address}`, () =>
     starknet.callContract({
       contractAddress: address,
-      entrypoint: "getBalance",
+      entrypoint: "balanceOf",
       calldata: bigNumberishArrayToDecimalStringArray([userAddress]),
     }));
 
@@ -53,8 +53,13 @@ const TokenAmount: React.FC<{ userAddress: string, address: string; decimals: nu
 const contractAddress = "0x0096fcc7ed91f5710208b3d029d1159f204a6be7246184f0ed4ffbccdfb49baf";
 
 const Home: NextPage = () => {
-  const [userAddress] = useAccountContractAddress();
-  const rows = [{ name: "TKN", address: contractAddress, decimals: 8 }];
+  const [savedUserAddress] = useAccountContractAddress();
+  const [userAddress, setAddress] = useState("");
+  useEffect(() => {
+      setAddress(savedUserAddress as string | undefined ?? "");
+  }, [savedUserAddress]);
+
+  const rows = [{ name: "TKN", address: contractAddress, decimals: 0 }];
   return (
     <div>
       <Head>
