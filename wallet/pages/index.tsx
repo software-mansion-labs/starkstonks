@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Container, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
+import ProgressScreen from "../screens/ProgressScreen";
 import SignTx from "../screens/SignTx";
 
 const Home: NextPage = () => {
@@ -23,7 +24,8 @@ const Home: NextPage = () => {
         justifyContent="center"
         style={{ minHeight: '100vh' }}
       >
-        <SignTx />
+        {/*<SignTx />*/}
+        <ProgressScreen title="Signing..." />
       </Grid>
     </div>
   )

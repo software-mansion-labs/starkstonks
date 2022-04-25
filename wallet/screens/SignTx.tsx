@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { decode, encode } from "../utils/messages";
 
@@ -18,8 +18,15 @@ const SignTx: React.FC<SignTxProps> = ({ onSign }) => {
   }); // FIXME
   const txContent = decode(router.query.tx);
   return <Grid item xs={3}>
-    <h1>Outgoing Transaction</h1>
-    <pre>{JSON.stringify(txContent, null, 4)}</pre>
+    <Typography variant="h4" mb={2}>Outgoing Transaction</Typography>
+    <Typography paragraph>Payload:</Typography>
+    <pre style={{
+      border: "black 1px solid",
+      borderRadius: "15px",
+      padding: "20px 10px",
+    }}>
+      {JSON.stringify(txContent, null, 4)}
+    </pre>
     <Button onSubmit={onSign} fullWidth color="primary">Sign!</Button>
   </Grid>;
 };
