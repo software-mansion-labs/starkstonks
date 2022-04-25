@@ -8,3 +8,7 @@ libs_path = "lib"
 main = [
     "./src/account.cairo",
 ]
+demo_token = [
+    "./src/demo_token.cairo",
+]
+
