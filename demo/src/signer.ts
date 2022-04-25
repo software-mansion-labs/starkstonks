@@ -40,6 +40,7 @@ export class StarkstonksSigner implements SignerInterface {
         } else {
           reject(event.data.errorMessage);
         }
+        debugger;
 
         window.removeEventListener("message", listener);
       };

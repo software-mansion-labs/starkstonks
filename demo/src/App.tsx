@@ -34,7 +34,7 @@ import { StarknetChainId } from "starknet/dist/constants";
 import { openWallet } from "./utils";
 import { useListener } from "./messages";
 
-const erc20Address = process.env.ERC20_ADDRESS as string;
+const erc20Address = "0x0096fcc7ed91f5710208b3d029d1159f204a6be7246184f0ed4ffbccdfb49baf";
 
 const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
   const { data: balance, mutate: revalidateBalance } = useSWR(
@@ -149,7 +149,7 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
 
   return (
     <Stack gap={2}>
-      <Typography variant="h3">Token wallet</Typography>
+      <Typography variant="h3">ERC20 DEMO</Typography>
       <Typography>
         This demo operates on a dummy ERC20 with faucet functionality.
       </Typography>
@@ -270,7 +270,7 @@ type AccountResponse =
       errorMessage: string;
     };
 
-const provider = new Provider({ baseUrl: "http://localhost:5000" });
+const provider = defaultProvider;
 
 const LoginScreen: React.FC<{ onCreate: (account: Account) => void }> = ({
   onCreate,

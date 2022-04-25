@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { generateKeysFromPassphrase, useGetKey } from "../utils/keys";
 import LoadingScreen from "../screens/LoadingScreen";
 import RegistrationScreen from "../screens/RegistrationScreen";
-import { Provider } from "starknet";
+import {defaultProvider, Provider} from "starknet";
 import { useRouter } from "next/router";
 import useAccountContractAddress from "../hooks/useAccountContractAddress";
 
-const provider = new Provider({ baseUrl: "http://localhost:5000" });
+const provider = defaultProvider;
 
 interface RegisterFlowProps {
   compiledAccountContract: string;

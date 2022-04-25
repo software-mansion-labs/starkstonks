@@ -4,7 +4,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
-from openzeppelin.account.library import (
+from src.custom_library import (
     AccountCallArray,
     Account_execute,
     Account_get_nonce,
