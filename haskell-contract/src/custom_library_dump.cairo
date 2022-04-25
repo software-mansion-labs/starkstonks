@@ -1,5 +1,4 @@
 %lang starknet
-%builtins range_check
 
 from starkware.cairo.common.registers import get_fp_and_pc
 from starkware.starknet.common.syscalls import get_contract_address

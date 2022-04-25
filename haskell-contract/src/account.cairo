@@ -1,6 +1,9 @@
 %lang starknet
 
+
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
+# from src.custom_library import (
+# openzeppelin.account.library
 from src.custom_library import (
     AccountCallArray,
     Account_execute,
@@ -12,6 +15,7 @@ from src.custom_library import (
 )
 
 from openzeppelin.introspection.ERC165 import ERC165_supports_interface 
+from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 
 #
 # Getters
@@ -99,7 +103,8 @@ func __execute__{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr, 
-        ecdsa_ptr: SignatureBuiltin*
+        ecdsa_ptr: SignatureBuiltin*,
+        bitwise_ptr : BitwiseBuiltin*
     }(
         call_array_len: felt,
         call_array: AccountCallArray*,
