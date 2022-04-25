@@ -53,7 +53,7 @@ const TokenAmount: React.FC<{ userAddress: string, address: string; decimals: nu
 const contractAddress = "0x0096fcc7ed91f5710208b3d029d1159f204a6be7246184f0ed4ffbccdfb49baf";
 
 const Home: NextPage = () => {
-  const userAddress = useAccountContractAddress();
+  const [userAddress] = useAccountContractAddress();
   const rows = [{ name: "TKN", address: contractAddress, decimals: 8 }];
   return (
     <div>

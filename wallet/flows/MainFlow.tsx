@@ -24,7 +24,7 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ compiledAccountContract }) 
   }
 
   useEffect(() => {
-    if (!key.data || key.data?.keys === undefined || accountContractAddress) {
+    if (!creatingAccount || !key.data || key.data?.keys === undefined || accountContractAddress) {
       return;
     }
     provider.deployContract({
@@ -45,7 +45,7 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ compiledAccountContract }) 
         router.replace(redirect);
       })
     });
-  }, [compiledAccountContract, accountContractAddress, key.data, key.data?.keys, router, router.query.redirectToConnect, setAccountContractAddress]);
+  }, [creatingAccount, compiledAccountContract, accountContractAddress, key.data, key.data?.keys, router, router.query.redirectToConnect, setAccountContractAddress]);
 
   if (key.data?.keys !== undefined && accountContractAddress) {
     router.replace(`wallet`);
