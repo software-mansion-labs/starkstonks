@@ -18,14 +18,6 @@ from openzeppelin.introspection.ERC165 import (
 
 from openzeppelin.utils.constants import IACCOUNT_ID
 
-from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
-
-from bigint import BigInt3
-from p256 import verify_ecdsa
-from p256_ec import EcPoint
-
-from sha256 import finalize_sha256, sha256
-
 #
 # Structs
 #
@@ -44,7 +36,7 @@ struct AccountCallArray:
     member selector: felt
     member data_offset: felt
     member data_len: felt
-end 
+end
 
 #
 # Storage
@@ -55,7 +47,7 @@ func Account_current_nonce() -> (res: felt):
 end
 
 @storage_var
-func Account_public_key() -> (res: EcPoint):
+func Account_public_key() -> (res: felt):
 end
 
 #
@@ -69,7 +61,7 @@ func Account_assert_only_self{syscall_ptr : felt*}():
         assert self = caller
     end
     return ()
-end 
+end
 
 #
 # Getters
@@ -79,13 +71,13 @@ func Account_get_public_key{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }() -> (res: EcPoint):
+    }() -> (res: felt):
     let (res) = Account_public_key.read()
     return (res=res)
 end
 
 func Account_get_nonce{
-        syscall_ptr : felt*,
+        syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }() -> (res: felt):
@@ -101,7 +93,7 @@ func Account_set_public_key{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(new_public_key: EcPoint):
+    }(new_public_key: felt):
     Account_assert_only_self()
     Account_public_key.write(new_public_key)
     return ()
@@ -115,7 +107,7 @@ func Account_initializer{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(_public_key: EcPoint):
+    }(_public_key: felt):
     Account_public_key.write(_public_key)
     ERC165_register_interface(IACCOUNT_ID)
     return()
@@ -125,107 +117,30 @@ end
 # Business logic
 #
 
-func compute_sha256{range_check_ptr, bitwise_ptr : BitwiseBuiltin*}(
-        input : felt*, n_bytes : felt) -> (res0 : felt, res1 : felt):
-    alloc_locals
-
-    let (local sha256_ptr_start : felt*) = alloc()
-    let sha256_ptr = sha256_ptr_start
-
-    let (local output : felt*) = sha256{sha256_ptr=sha256_ptr}(input, n_bytes)
-    finalize_sha256(sha256_ptr_start=sha256_ptr_start, sha256_ptr_end=sha256_ptr)
-
-    return (
-        output[3] + 2 ** 32 * output[2] + 2 ** 64 * output[1] + 2 ** 96 * output[0],
-        output[7] + 2 ** 32 * output[6] + 2 ** 64 * output[5] + 2 ** 96 * output[4])
-end
-
-func Account_is_valid_signature_do{
+func Account_is_valid_signature{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr, 
-        ecdsa_ptr: SignatureBuiltin*,
-        bitwise_ptr : BitwiseBuiltin*
+        ecdsa_ptr: SignatureBuiltin*
     }(
         hash: felt,
         signature_len: felt,
-        signature: felt*,
-        _public_key: EcPoint
+        signature: felt*
     ) -> ():
+    let (_public_key) = Account_public_key.read()
+
     # This interface expects a signature pointer and length to make
     # no assumption about signature validation schemes.
     # But this implementation does, and it expects a (sig_r, sig_s) pair.
     let sig_r = signature[0]
     let sig_s = signature[1]
 
-    # let msh_hash_but_better = compute_sha256(
-    #     &hash,
-    #     1
-    # )
+    verify_ecdsa_signature(
+        message=hash,
+        public_key=_public_key,
+        signature_r=sig_r,
+        signature_s=sig_s)
 
-    verify_ecdsa(
-        public_key_pt=_public_key,
-        msg_hash=BigInt3(0,0,hash),
-        r=BigInt3(0,0,sig_r),
-        s=BigInt3(0,0,sig_s)
-    )
-
-    return ()
-end
-
-func Account_is_valid_signature_doo{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr, 
-        ecdsa_ptr: SignatureBuiltin*,
-        bitwise_ptr : BitwiseBuiltin*
-    }(
-        public_key_pt : EcPoint,
-        msg_hash : BigInt3,
-        r : BigInt3,
-        s : BigInt3
-    ) -> ():
-    # This interface expects a signature pointer and length to make
-    # no assumption about signature validation schemes.
-    # But this implementation does, and it expects a (sig_r, sig_s) pair.
-    # let sig_r = signature[0]
-    # let sig_s = signature[1]
-
-    # let msh_hash_but_better = compute_sha256(
-    #     &hash,
-    #     1
-    # )
-
-    verify_ecdsa(
-        public_key_pt=public_key_pt,
-        msg_hash=msg_hash,
-        r=r,
-        s=s
-    )
-
-    return ()
-end
-
-
-func Account_is_valid_signature{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr, 
-        ecdsa_ptr: SignatureBuiltin*,
-        bitwise_ptr : BitwiseBuiltin*
-    }(
-        hash: felt,
-        signature_len: felt,
-        signature: felt*
-    ) -> ():
-    alloc_locals
-    let (_public_key) = Account_public_key.read()
-    Account_is_valid_signature_do(
-        hash,
-        signature_len,
-        signature,
-        _public_key
-    )
     return ()
 end
 
@@ -234,8 +149,7 @@ func Account_execute{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr, 
-        ecdsa_ptr: SignatureBuiltin*,
-        bitwise_ptr : BitwiseBuiltin*
+        ecdsa_ptr: SignatureBuiltin*
     }(
         call_array_len: felt,
         call_array: AccountCallArray*,
@@ -258,7 +172,7 @@ func Account_execute{
     let calls_len = call_array_len
 
     # validate transaction
-    Account_is_valid_signature(tx_info.transaction_hash, tx_info.signature_len, tx_info.signature)
+    # Account_is_valid_signature(tx_info.transaction_hash, tx_info.signature_len, tx_info.signature)
 
     # bump nonce
     Account_current_nonce.write(_current_nonce + 1)
