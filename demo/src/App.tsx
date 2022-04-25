@@ -30,6 +30,8 @@ import useSWRImmutable from "swr/immutable";
 import { Account, AccountInterface, defaultProvider, Provider } from "starknet";
 import { WALLET_URL } from "./config";
 import { StarkstonksSigner } from "./signer";
+import { StarknetChainId } from "starknet/dist/constants";
+import { openWallet } from "./utils";
 
 const erc20Address = process.env.ERC20_ADDRESS as string;
 
@@ -123,6 +125,25 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
       .finally(() => setLoading(false));
   };
 
+  const onTestPress = () => {
+    lib.signer.signTransaction(
+      [
+        {
+          entrypoint: "transfer",
+          calldata: [],
+          contractAddress: "0x123",
+        },
+      ],
+      {
+        chainId: StarknetChainId.TESTNET,
+        walletAddress: "0x999",
+        version: 0,
+        maxFee: 0,
+        nonce: 0,
+      }
+    );
+  };
+
   return (
     <Stack gap={2}>
       <Typography variant="h3">Token wallet</Typography>
@@ -181,6 +202,9 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
           Send tokens
         </LoadingButton>
       </Stack>
+      <Button onClick={onTestPress} variant="contained">
+        Test signing
+      </Button>
     </Stack>
   );
 };
@@ -272,11 +296,7 @@ const LoginScreen: React.FC<{ onCreate: (account: Account) => void }> = ({
   }, [onCreate]);
 
   const onClick = () => {
-    window.open(
-      `${WALLET_URL}/auth`,
-      "popUpWindow",
-      "height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes"
-    );
+    openWallet("/auth");
   };
 
   return (
