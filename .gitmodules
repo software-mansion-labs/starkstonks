@@ -1,0 +1,6 @@
+[submodule "contract/nistp256-cairo"]
+	path = contract/nistp256-cairo
+	url = https://github.com/spartucus/nistp256-cairo.git
+[submodule "contract/cairo-examples"]
+	path = contract/cairo-examples
+	url = https://github.com/starkware-libs/cairo-examples.git
