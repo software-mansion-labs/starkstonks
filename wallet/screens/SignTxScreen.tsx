@@ -10,26 +10,44 @@ interface SignTxProps {
 
 const SignTxScreen: React.FC<SignTxProps> = ({ onSign }) => {
   const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
+
+  // React.useEffect(() => {
+  //   // const txContent = decode(router.query.tx as string);
+  // }, [router.query.tx]);
+
   if (typeof router.query.tx !== "string") {
+    return null;
     // return null; FIXME
   }
-  router.query.tx = encode({
-    tx1: "param1",
-    tx2: "param2",
-  }); // FIXME
+
   const txContent = decode(router.query.tx);
-  return (<ScreenWrapper>
-    <Typography variant="h4" mb={2}>Outgoing Transaction</Typography>
-    <Typography paragraph>Payload</Typography>
-    <pre style={{
-      border: "black 1px solid",
-      borderRadius: "15px",
-      padding: "20px 10px",
-    }}>
-      {JSON.stringify(txContent, null, 4)}
-    </pre>
-    <Button onSubmit={onSign} fullWidth color="primary">Sign!</Button>
-  </ScreenWrapper>)
+
+  // router.query.tx = encode({
+  //   tx1: "param1",
+  //   tx2: "param2",
+  // }); // FIXME
+
+  return (
+    <ScreenWrapper>
+      <Typography variant="h4" mb={2}>
+        Outgoing Transaction
+      </Typography>
+      <Typography paragraph>Payload</Typography>
+      <pre
+        style={{
+          border: "black 1px solid",
+          borderRadius: "15px",
+          padding: "20px 10px",
+        }}
+      >
+        {JSON.stringify(txContent, null, 4)}
+      </pre>
+      <Button onSubmit={onSign} fullWidth color="primary">
+        Sign!
+      </Button>
+    </ScreenWrapper>
+  );
 };
 
 export default SignTxScreen;

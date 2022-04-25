@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 
 interface RegistrationScreenProps {
-  onRegister: () => Promise<void> | void
+  onRegister: (passphrase: string) => Promise<void> | void
 }
 
 const RegistrationScreen: React.FC<RegistrationScreenProps> = ({ onRegister }) => {
@@ -20,8 +20,8 @@ const RegistrationScreen: React.FC<RegistrationScreenProps> = ({ onRegister }) =
         onChange={(e) => setPassphrase(e.target.value)}
         value={passphrase}
       />
-      <Button onSubmit={onRegister}>Submit</Button>
-      </Stack>
+      <Button onClick={() => onRegister(passphrase)}>Submit</Button>
+    </Stack>
   </Grid>;
 };
 export default RegistrationScreen;

@@ -8,7 +8,7 @@ interface ProgressScreenProps {
 
 const InfoScreen: React.FC<PropsWithChildren<ProgressScreenProps>> = ({ title, children }) => (
   <ScreenWrapper>
-    <Typography variant="h3" sx={{ marginBottom: "2rem" }}>{title}</Typography>
+    <Typography variant="h4" sx={{ marginBottom: "2rem" }}>{title}</Typography>
     {children}
   </ScreenWrapper>
 );

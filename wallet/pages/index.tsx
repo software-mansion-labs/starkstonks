@@ -1,10 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Grid } from "@mui/material";
-import SignTxScreen from "../screens/SignTxScreen";
-import RegistrationScreen from "../screens/RegistrationScreen";
-import LoadingScreen from "../screens/LoadingScreen";
-import SuccessScreen from "../screens/SuccessScreen";
+import RegisterFlow from '../flows/MainFlow';
 
 const Home: NextPage = () => {
   return (
@@ -26,10 +23,6 @@ const Home: NextPage = () => {
         justifyContent="center"
         style={{ minHeight: '100vh' }}
       >
-        {/*<SignTx />*/}
-        {/*<LoadingScreen title="Signing..." />*/}
-        {/*<RegistrationScreen />*/}
-        {/*<SuccessScreen title="Successfully signed!" />*/}
       </Grid>
     </div>
   )
