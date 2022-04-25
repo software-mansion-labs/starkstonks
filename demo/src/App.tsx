@@ -27,7 +27,9 @@ import Skeleton from "@mui/material/Skeleton";
 import { useTrackTxInProgress } from "./hooks";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
-import { Account, AccountInterface } from "starknet";
+import { Account, AccountInterface, defaultProvider, Provider } from "starknet";
+import { WALLET_URL } from "./config";
+import { StarkstonksSigner } from "./signer";
 
 const erc20Address = process.env.ERC20_ADDRESS as string;
 
@@ -231,23 +233,47 @@ const TokenWallet: React.FC<{ lib: AccountInterface }> = ({ lib }) => {
 //   network: "goerli-alpha",
 // };
 
-const LoginScreen: React.FC<{ onCreate: () => void }> = ({ onCreate }) => {
+type AccountResponse =
+  | {
+      status: "success";
+      address: string;
+    }
+  | {
+      status: "error";
+      errorMessage: string;
+    };
+
+const provider = new Provider({ baseUrl: "http://localhost:5000" });
+
+const LoginScreen: React.FC<{ onCreate: (account: Account) => void }> = ({
+  onCreate,
+}) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const listener = (event: MessageEvent) => {
-      console.log(event.origin);
+    const listener = (event: MessageEvent<AccountResponse>) => {
+      console.log("here 1");
+      if (event.origin !== WALLET_URL) return;
+      console.log("here 2");
+
       console.log(event.data);
+
+      if (event.data.status === "success") {
+        const signer = new StarkstonksSigner();
+        const account = new Account(provider, event.data.address, signer);
+
+        onCreate(account);
+      }
     };
 
     window.addEventListener("message", listener, false);
 
     return () => window.removeEventListener("message", listener);
-  }, []);
+  }, [onCreate]);
 
   const onClick = () => {
     window.open(
-      "http://localhost:3001/auth",
+      `${WALLET_URL}/auth`,
       "popUpWindow",
       "height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes"
     );
@@ -276,6 +302,8 @@ const App = () => {
   //   const account = accounts?.[0];
   //   return { adapter, account };
   // });
+
+  const [account, setAccount] = useState<Account | undefined>(undefined);
 
   // const loadingAdapter = !data;
   // const { adapter, account } = data ?? {};
@@ -332,13 +360,13 @@ const App = () => {
   //   );
   // }
 
-  // return isDeployed ? (
-  //   <TokenWallet lib={lib} />
-  // ) : (
-  //   <CreateAccountForm lib={lib} onCreate={() => setIsDeployed(true)} />
-  // );
+  console.log("account:", account);
 
-  return <LoginScreen onCreate={() => {}} />;
+  return account === undefined ? (
+    <LoginScreen onCreate={setAccount} />
+  ) : (
+    <TokenWallet lib={account} />
+  );
 };
 
 export default App;
