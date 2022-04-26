@@ -33,7 +33,7 @@ const Connect: React.FC = () => {
   };
 
   return (
-    <Grid item xs={3}>
+    <Grid item xs={12}>
       <h1>Connect to site</h1>
       <Button onClick={onLogin} fullWidth color="primary">
         Connect

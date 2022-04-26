@@ -18,13 +18,16 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ compiledAccountContract }) 
   const [accountContractAddress, setAccountContractAddress] = useAccountContractAddress();
   const [creatingAccount, setCreatingAccount] = useState(false);
 
+  const keyPair = key.data?.keys;
+
   const createAccount = async (passphrase: string) => {
     setCreatingAccount(true);
-    await generateKeysFromPassphrase(passphrase);
+    const keys = await generateKeysFromPassphrase(passphrase);
+    key.mutate({keys})
   }
 
   useEffect(() => {
-    if (!creatingAccount || !key.data || key.data?.keys === undefined || accountContractAddress) {
+    if (!creatingAccount || !keyPair || accountContractAddress) {
       return;
     }
     provider.deployContract({
@@ -36,19 +39,19 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ compiledAccountContract }) 
         if (!addTxRes.address) {
           throw new Error("No address returned for account contract from gateway");
         }
-        if (typeof router.query.redirectToConnect === 'string') {
-          redirect = 'connect';
-        } else {
-          redirect = 'wallet';
-        }
+        // if (typeof router.query.redirectToConnect === 'string') {
+        //   redirect = '/connect';
+        // } else {
+        //   redirect = '/wallet';
+        // }
         setAccountContractAddress(addTxRes.address);
-        router.replace(redirect);
+        router.replace("/connect");
       })
     });
-  }, [creatingAccount, compiledAccountContract, accountContractAddress, key.data, key.data?.keys, router, router.query.redirectToConnect, setAccountContractAddress]);
+  }, [creatingAccount, compiledAccountContract, accountContractAddress, keyPair, router, router.query.redirectToConnect, setAccountContractAddress]);
 
-  if (key.data?.keys !== undefined && accountContractAddress) {
-    router.replace(`wallet`);
+  if (keyPair && accountContractAddress) {
+    // router.replace(`wallet`);
     return <LoadingScreen title="Loading your wallet..."/>;
   }
 

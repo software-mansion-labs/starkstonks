@@ -7,8 +7,8 @@ interface RegistrationScreenProps {
 
 const RegistrationScreen: React.FC<RegistrationScreenProps> = ({ onRegister }) => {
   const [passphrase, setPassphrase] = useState("");
-  return <Grid item xs={3}>
-    <Stack spacing="1rem">
+  return <Grid item>
+    <Stack spacing="1rem" style={{marginLeft: -20, maxWidth: "350px"}}>
       <Typography variant="h4">Registration</Typography>
       <Typography paragraph>Enter a passphrase which you will use later for account recovery</Typography>
       <TextField

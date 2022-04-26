@@ -47,13 +47,14 @@ export const loadKeys = async (): Promise<CryptoKeyPair> => {
   });
 }
 
-export const generateKeys = async () => {
+export const generateKeys = async (): Promise<CryptoKeyPair> => {
   const keys = await window.crypto.subtle.generateKey(
     { name: "ECDSA", namedCurve: "P-256" },
     false,
     ["sign", "verify"]
   );
-  await saveKeys(keys);
+  saveKeys(keys); // fixme
+  return keys;
 }
 
 export const useGetKey = () => useSWR("key", async () => ({ keys: await loadKeys() }));
